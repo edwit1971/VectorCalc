@@ -2,12 +2,13 @@
 # VectorCalc is a simple Vector Component Calculator
 ##############################################################
 import math
-
+from Keypad import OSKeypad
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.image import Image
 from kivy.core.window import Window
 
@@ -15,142 +16,91 @@ from kivy.core.window import Window
 #  Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
 
 ##############################################################
-# GLOBAL VARIABLES
-
-##############################################################
 ##############################################################
 class TextInputField(TextInput):
-    #############################################
-    # CLASS VARIABLES
-    Flag_T = False
+    ############################################
+    # Static Class Variables
+    scOSKeypad = OSKeypad()
     #############################################
     def __init__(self, **kwargs):
         super(TextInputField, self).__init__(**kwargs)
-        self.bind(on_press = self.callback_Pressed)
         self.bind(on_touch_down = self.callback_Touched_Down)
         self.bind(on_text_validate = self.callback_Validate)
+        self.coUID = 'String'
+        self.coUID_Holder = self.coUID
+    #############################################
     def Read_String(self):
         return self.text
+    #############################################
     def Write_String(self, String):
         self.text = String
         return
-    def Pressed(self, touch):
-        if((LayoutsApp.T_A.Flag_T  == False) and
-           (LayoutsApp.T_Ax.Flag_T == False) and
-           (LayoutsApp.T_Ay.Flag_T == False) and
-           (LayoutsApp.T_At.Flag_T == False)):
-            Tx = touch.pos[0]
-            Ty = touch.pos[1]
-            A_Lower = LayoutsApp.T_A.pos[1]
-            A_Upper = A_Lower + LayoutsApp.T_A.size[1]
-            A_Left  = LayoutsApp.T_A.pos[0]
-            A_Right = A_Left + LayoutsApp.T_A.size[0]
-            Ax_Lower = LayoutsApp.T_Ax.pos[1]
-            Ax_Upper = Ax_Lower + LayoutsApp.T_Ax.size[1]
-            Ax_Left  = LayoutsApp.T_Ax.pos[0]
-            Ax_Right = Ax_Left + LayoutsApp.T_Ax.size[0]
-            Ay_Lower = LayoutsApp.T_Ay.pos[1]
-            Ay_Upper = Ay_Lower + LayoutsApp.T_Ay.size[1]
-            Ay_Left  = LayoutsApp.T_Ay.pos[0]
-            Ay_Right = Ay_Left + LayoutsApp.T_Ay.size[0]
-            At_Lower = LayoutsApp.T_At.pos[1]
-            At_Upper = At_Lower + LayoutsApp.T_At.size[1]
-            At_Left  = LayoutsApp.T_At.pos[0]
-            At_Right = At_Left + LayoutsApp.T_At.size[0]
-            if((Ty >= A_Lower) and (Ty <= A_Upper) and (Tx <= A_Left)):
-                LayoutsApp.T_A.text = ' '
-            elif((Ty >= Ax_Lower) and (Ty <= Ax_Upper) and (Tx <= Ax_Left)):
-                LayoutsApp.T_Ax.text = ' '
-            elif((Ty >= Ay_Lower) and (Ty <= Ay_Upper) and (Tx <= Ay_Left)):
-                LayoutsApp.T_Ay.text = ' '
-            elif((Ty >= At_Lower) and (Ty <= At_Upper) and (Tx <= At_Left)):
-                LayoutsApp.T_At.text = ' '
-            elif((Ty >= A_Lower) and (Ty <= A_Upper) and
-               (Tx >= A_Left) and (Tx <= A_Right)):
-                LayoutsApp.T_A.Flag_T = True
-                LayoutsApp.T_Input.text = LayoutsApp.T_A.text
-                LayoutsApp.T_A.disabled = True
-                LayoutsApp.T_Input.focus = True
-                LayoutsApp.T_Input.opacity = 1   # TextInput Visible
-                LayoutsApp.T_Input.show_keyboard()
-                LayoutsApp.T_Input.select_all()
-                LayoutsApp.T_Input.input_type = 'number'
-                LayoutsApp.Button_Calc.opacity = 0
-                LayoutsApp.Button_Clear.opacity = 0
-                LayoutsApp.Button_Calc.disabled = True
-                LayoutsApp.Button_Clear.disabled = True
-            elif((Ty >= Ax_Lower) and (Ty <= Ax_Upper) and
-               (Tx >= Ax_Left) and (Tx <= Ax_Right)):
-                LayoutsApp.T_Ax.Flag_T = True
-                LayoutsApp.T_Input.text = LayoutsApp.T_Ax.text
-                LayoutsApp.T_Ax.disabled = True
-                LayoutsApp.T_Input.focus = True
-                LayoutsApp.T_Input.opacity = 1   # TextInput Visible
-                LayoutsApp.T_Input.show_keyboard()
-                LayoutsApp.T_Input.select_all()
-                LayoutsApp.T_Input.input_type = 'number'
-                LayoutsApp.Button_Calc.opacity = 0
-                LayoutsApp.Button_Clear.opacity = 0
-                LayoutsApp.Button_Calc.disabled = True
-                LayoutsApp.Button_Clear.disabled = True
-            elif((Ty >= Ay_Lower) and (Ty <= Ay_Upper) and
-               (Tx >= Ay_Left) and (Tx <= Ay_Right)):
-                LayoutsApp.T_Ay.Flag_T = True
-                LayoutsApp.T_Input.text = LayoutsApp.T_Ay.text
-                LayoutsApp.T_Ay.disabled = True
-                LayoutsApp.T_Input.focus = True
-                LayoutsApp.T_Input.opacity = 1   # TextInput Visible
-                LayoutsApp.T_Input.show_keyboard()
-                LayoutsApp.T_Input.select_all()
-                LayoutsApp.T_Input.input_type = 'number'
-                LayoutsApp.Button_Calc.opacity = 0
-                LayoutsApp.Button_Clear.opacity = 0
-                LayoutsApp.Button_Calc.disabled = True
-                LayoutsApp.Button_Clear.disabled = True
-            elif((Ty >= At_Lower) and (Ty <= At_Upper) and
-               (Tx >= At_Left) and (Tx <= At_Right)):
-                LayoutsApp.T_At.Flag_T = True
-                LayoutsApp.T_Input.text = LayoutsApp.T_At.text
-                LayoutsApp.T_At.disabled = True
-                LayoutsApp.T_Input.focus = True
-                LayoutsApp.T_Input.opacity = 1   # TextInput Visible
-                LayoutsApp.T_Input.show_keyboard()
-                LayoutsApp.T_Input.select_all()
-                LayoutsApp.T_Input.input_type = 'number'
-                LayoutsApp.Button_Calc.opacity = 0
-                LayoutsApp.Button_Clear.opacity = 0
-                LayoutsApp.Button_Calc.disabled = True
-                LayoutsApp.Button_Clear.disabled = True
-        return
-    def callback_Pressed(self, instance):
-        return self.Pressed(instance)
+    #############################################
     def callback_Touched_Down(self, instance, touch):
-        return self.Pressed(touch)
-    def callback_Validate(instance, value):
-        if(LayoutsApp.T_A.Flag_T):
-            LayoutsApp.T_A.text = LayoutsApp.T_Input.text
-        elif(LayoutsApp.T_Ax.Flag_T):
-            LayoutsApp.T_Ax.text = LayoutsApp.T_Input.text
-        elif(LayoutsApp.T_Ay.Flag_T):
-            LayoutsApp.T_Ay.text = LayoutsApp.T_Input.text
-        elif(LayoutsApp.T_At.Flag_T):
-            LayoutsApp.T_At.text = LayoutsApp.T_Input.text
+        # Scan Through All Child Widgets to see which one was Touched
+        Tx = touch.pos[0]
+        Ty = touch.pos[1]
+        A_Lower = LayoutsApp.T_A.pos[1]
+        A_Upper = A_Lower + LayoutsApp.T_A.size[1]
+        A_Left  = LayoutsApp.T_A.pos[0]
+        Ax_Lower = LayoutsApp.T_Ax.pos[1]
+        Ax_Upper = Ax_Lower + LayoutsApp.T_Ax.size[1]
+        Ax_Left  = LayoutsApp.T_Ax.pos[0]
+        Ay_Lower = LayoutsApp.T_Ay.pos[1]
+        Ay_Upper = Ay_Lower + LayoutsApp.T_Ay.size[1]
+        Ay_Left  = LayoutsApp.T_Ay.pos[0]
+        At_Lower = LayoutsApp.T_At.pos[1]
+        At_Upper = At_Lower + LayoutsApp.T_At.size[1]
+        At_Left  = LayoutsApp.T_At.pos[0]
+        if((Ty >= A_Lower) and (Ty <= A_Upper) and (Tx <= A_Left)):
+            LayoutsApp.T_A.text = ' '
+        elif((Ty >= Ax_Lower) and (Ty <= Ax_Upper) and (Tx <= Ax_Left)):
+            LayoutsApp.T_Ax.text = ' '
+        elif((Ty >= Ay_Lower) and (Ty <= Ay_Upper) and (Tx <= Ay_Left)):
+            LayoutsApp.T_Ay.text = ' '
+        elif((Ty >= At_Lower) and (Ty <= At_Upper) and (Tx <= At_Left)):
+            LayoutsApp.T_At.text = ' '
+        else:
+            mStr = ''
+            for child in LayoutsApp.scParent.children:
+                if((child.collide_point(touch.x, touch.y)) and
+                   (isinstance(child, TextInput))):
+                    mStr = child.coUID
+                    child.coUID_Holder = mStr
+                    LayoutsApp.Button_Calc.opacity = 0
+                    LayoutsApp.Button_Clear.opacity = 0
+                    LayoutsApp.Button_Calc.disabled = True
+                    LayoutsApp.Button_Clear.disabled = True
+                    # Display the Keypad if it's not already displayed
+                    if(OSKeypad.scIsKeypadDisplayed == False):
+                        OSKeypad.scIsKeypadDisplayed = True
+                        #########################################
+                        # create an object of class OSCalculator
+                        # and set the FloatLayout property so
+                        # we can add Buttons and add other
+                        # Widgets inside the Window
+                        child.scOSKeypad = TextInputField.scOSKeypad
+                        child.scOSKeypad.Set_OSKDisplay(self.get_parent_window(),\
+                                                        LayoutsApp.scChildLayout,\
+                                                        Window,\
+                                                        LayoutsApp.Image_Xo,\
+                                                        Window.height)
+                        child.scOSKeypad.Display_OSKeypad()
+                        child.scOSKeypad.Set_TextDisplay(child)
+                        #########################################
+                        break
+        return
+    
+    def callback_Validate(self, value):
+        TextInputField.scOSKeypad.scTextDisplay.cancel_selection()
+        TextInputField.scOSKeypad.scTextDisplay.text_validate_unfocus = True
+        OSKeypad.scIsKeypadDisplayed = False
+        TextInputField.scOSKeypad.Disappear_OSKeypad()
+        self.get_parent_window().remove_widget(LayoutsApp.scChildLayout)
         LayoutsApp.Button_Calc.disabled = False
         LayoutsApp.Button_Clear.disabled = False
         LayoutsApp.Button_Calc.opacity = 1
         LayoutsApp.Button_Clear.opacity = 1
-        LayoutsApp.T_A.Flag_T    = False
-        LayoutsApp.T_A.disabled  = False
-        LayoutsApp.T_Ax.Flag_T   = False
-        LayoutsApp.T_Ax.disabled = False
-        LayoutsApp.T_Ay.Flag_T   = False
-        LayoutsApp.T_Ay.disabled = False
-        LayoutsApp.T_At.Flag_T   = False
-        LayoutsApp.T_At.disabled = False
-        LayoutsApp.T_Input.focus = False
-        LayoutsApp.T_Input.Flag_T  = False
-        LayoutsApp.T_Input.opacity = 0   # TextInput Invisible
-        LayoutsApp.T_Input.hide_keyboard()
         return
 ##############################################################
 ##############################################################
@@ -161,17 +111,6 @@ class ButtonCalc(Button):
     def on_press_button(self, instance):
         LayoutsApp.Button_Calc.disabled = False
         LayoutsApp.Button_Clear.disabled = False
-        LayoutsApp.T_A.Flag_T    = False
-        LayoutsApp.T_A.disabled  = False
-        LayoutsApp.T_Ax.Flag_T   = False
-        LayoutsApp.T_Ax.disabled = False
-        LayoutsApp.T_Ay.Flag_T   = False
-        LayoutsApp.T_Ay.disabled = False
-        LayoutsApp.T_At.Flag_T   = False
-        LayoutsApp.T_At.disabled = False
-        LayoutsApp.T_Input.Flag_T = False
-        LayoutsApp.T_Input.opacity = 0   # TextInput Invisible
-        LayoutsApp.T_Input.hide_keyboard()
         return VectorN()
 ##############################################################
 ##############################################################
@@ -186,17 +125,6 @@ class ButtonClear(Button):
         LayoutsApp.T_At.text = ' '
         LayoutsApp.Button_Calc.disabled = False
         LayoutsApp.Button_Clear.disabled = False
-        LayoutsApp.T_A.Flag_T    = False
-        LayoutsApp.T_A.disabled  = False
-        LayoutsApp.T_Ax.Flag_T   = False
-        LayoutsApp.T_Ax.disabled = False
-        LayoutsApp.T_Ay.Flag_T   = False
-        LayoutsApp.T_Ay.disabled = False
-        LayoutsApp.T_At.Flag_T   = False
-        LayoutsApp.T_At.disabled = False
-        LayoutsApp.T_Input.Flag_T = False
-        LayoutsApp.T_Input.opacity = 0   # TextInput Invisible
-        LayoutsApp.T_Input.hide_keyboard()
         return
 ##############################################################
 ##############################################################
@@ -364,13 +292,15 @@ class LayoutsApp(App):
     T_Ax = TextInputField()
     T_Ay = TextInputField()
     T_At = TextInputField()
-    T_Input = TextInputField()
     Button_Clear = ButtonClear()
     Button_Calc  = ButtonCalc()
+    Image_Xo = 0
+    scParent = FloatLayout()
+    scChildLayout  = RelativeLayout()
     #############################################
     def build(self):
         #############################################
-        Main_Layout = FloatLayout()
+        
         #############################################
         # I need to find out the current devices
         # WINDOW SIZE so I can place all the
@@ -395,10 +325,10 @@ class LayoutsApp(App):
         ##########################
         ftmp = (Win_xmax * 0.5) - (Image_Width * 0.5)
         X = int(ftmp)
-        Image_Xo = X
+        LayoutsApp.Image_Xo = X
         ftmp = Win_ymax - (TextField_Height * 3) - Image_Height
         Image_Yo = int(ftmp)
-        Xo = Image_Xo + TextField_Width
+        Xo = LayoutsApp.Image_Xo + TextField_Width
         ftmp = Label_Width * 0.5
         Label_Xo = Xo - Label_Width - int(ftmp)
         #############################################
@@ -406,29 +336,11 @@ class LayoutsApp(App):
         Triangle.size_hint = (None, None)
         Triangle.width  = Image_Width
         Triangle.height = Image_Height
-        Triangle.pos = (Image_Xo, Image_Yo)
+        Triangle.pos = (LayoutsApp.Image_Xo, Image_Yo)
         Triangle.allow_stretch = True
         Triangle.opacity = 1
         Triangle.keep_ratio = True
-        Main_Layout.add_widget(Triangle)
-        #############################################
-        self.T_Input.text = 'Type Here'
-        self.T_Input.size_hint = (None, None)
-        self.T_Input.width  = TextField_Width
-        self.T_Input.height = TextField_Height
-        ftmp = Image_Yo + (Image_Height * 0.8) + TextField_Height
-        Y = int(ftmp)
-        self.T_Input.pos  = (Label_Xo, Y)
-        self.T_Input.x = Label_Xo
-        self.T_Input.y = Y
-        self.T_Input.font_size = FontSize
-        self.T_Input.multiline = False
-        self.T_Input.readonly = False
-        self.T_Input.input_filter = 'float'
-        self.T_Input.opacity = 0   # TextInput Invisible
-        self.T_Input.background_color = (0,0,1,1)
-        self.T_Input.foreground_color = (1,1,1,1)
-        Main_Layout.add_widget(self.T_Input)
+        LayoutsApp.scParent.add_widget(Triangle)
         #############################################
         # Show me the initial Screen Values
         str_A  = '5.0'
@@ -444,31 +356,31 @@ class LayoutsApp(App):
         Lab_A.pos  = (Label_Xo, Y)
         Lab_A.font_size = FontSize
         Lab_A.shorten = True
-        Main_Layout.add_widget(Lab_A)
-        self.T_A.text = str_A
-        self.T_A.size_hint = (None, None)
-        self.T_A.width  = TextField_Width
-        self.T_A.height = TextField_Height
-        self.T_A.pos  = (Xo, Y)
-        self.T_A.x = Xo
-        self.T_A.y = Y
-        self.T_A.font_size = FontSize
-        self.T_A.multiline = False
-        self.T_A.background_color = (0,0,0,1)
-        self.T_A.foreground_color = (1,1,1,1)
-        Main_Layout.add_widget(self.T_A)
+        LayoutsApp.scParent.add_widget(Lab_A)
+        LayoutsApp.T_A.text = str_A
+        LayoutsApp.T_A.size_hint = (None, None)
+        LayoutsApp.T_A.width  = TextField_Width
+        LayoutsApp.T_A.height = TextField_Height
+        LayoutsApp.T_A.pos  = (Xo, Y)
+        LayoutsApp.T_A.x = Xo
+        LayoutsApp.T_A.y = Y
+        LayoutsApp.T_A.font_size = FontSize
+        LayoutsApp.T_A.multiline = False
+        LayoutsApp.T_A.background_color = (0,0,0,1)
+        LayoutsApp.T_A.foreground_color = (1,1,1,1)
+        LayoutsApp.scParent.add_widget(LayoutsApp.T_A)
         #############################################
-        self.Button_Calc.text = 'Calc'
-        self.Button_Calc.size_hint = (None, None)
+        LayoutsApp.Button_Calc.text = 'Calc'
+        LayoutsApp.Button_Calc.size_hint = (None, None)
         ftmp = TextField_Width * 0.6
-        self.Button_Calc.width = int(ftmp)
-        self.Button_Calc.height = TextField_Height
+        LayoutsApp.Button_Calc.width = int(ftmp)
+        LayoutsApp.Button_Calc.height = TextField_Height
         Y = Y - TextField_Height
         X = Xo + TextField_Width
-        self.Button_Calc.pos = (X, Y)
-        self.Button_Calc.color = (1,0,0,1)
-        self.Button_Calc.font_size = FontSize
-        Main_Layout.add_widget(self.Button_Calc)
+        LayoutsApp.Button_Calc.pos = (X, Y)
+        LayoutsApp.Button_Calc.color = (1,0,0,1)
+        LayoutsApp.Button_Calc.font_size = FontSize
+        LayoutsApp.scParent.add_widget(LayoutsApp.Button_Calc)
         #############################################
         Lab_Ax = Label(text='Ax = ')
         Lab_Ax.size_hint = (None, None)
@@ -478,30 +390,30 @@ class LayoutsApp(App):
         Lab_Ax.pos  = (Label_Xo, Y)
         Lab_Ax.font_size = FontSize
         Lab_Ax.shorten = True
-        Main_Layout.add_widget(Lab_Ax)
-        self.T_Ax.text = str_Ax
-        self.T_Ax.size_hint = (None, None)
-        self.T_Ax.width  = TextField_Width
-        self.T_Ax.height = TextField_Height
-        self.T_Ax.pos  = (Xo, Y)
-        self.T_Ax.x = Xo
-        self.T_Ax.y = Y
-        self.T_Ax.font_size = FontSize
-        self.T_Ax.multiline = False
-        self.T_Ax.background_color = (0,0,0,1)
-        self.T_Ax.foreground_color = (1,1,1,1)
-        Main_Layout.add_widget(self.T_Ax)
+        LayoutsApp.scParent.add_widget(Lab_Ax)
+        LayoutsApp.T_Ax.text = str_Ax
+        LayoutsApp.T_Ax.size_hint = (None, None)
+        LayoutsApp.T_Ax.width  = TextField_Width
+        LayoutsApp.T_Ax.height = TextField_Height
+        LayoutsApp.T_Ax.pos  = (Xo, Y)
+        LayoutsApp.T_Ax.x = Xo
+        LayoutsApp.T_Ax.y = Y
+        LayoutsApp.T_Ax.font_size = FontSize
+        LayoutsApp.T_Ax.multiline = False
+        LayoutsApp.T_Ax.background_color = (0,0,0,1)
+        LayoutsApp.T_Ax.foreground_color = (1,1,1,1)
+        LayoutsApp.scParent.add_widget(LayoutsApp.T_Ax)
         #############################################
-        self.Button_Clear.text = 'Clear'
-        self.Button_Clear.size_hint = (None, None)
+        LayoutsApp.Button_Clear.text = 'Clear'
+        LayoutsApp.Button_Clear.size_hint = (None, None)
         ftmp = TextField_Width * 0.6
-        self.Button_Clear.width = int(ftmp)
-        self.Button_Clear.height = TextField_Height
+        LayoutsApp.Button_Clear.width = int(ftmp)
+        LayoutsApp.Button_Clear.height = TextField_Height
         Y = Y - TextField_Height
-        self.Button_Clear.pos = (X, Y)
-        self.Button_Clear.color = (1,1,1,1)
-        self.Button_Clear.font_size = FontSize
-        Main_Layout.add_widget(self.Button_Clear)
+        LayoutsApp.Button_Clear.pos = (X, Y)
+        LayoutsApp.Button_Clear.color = (1,1,1,1)
+        LayoutsApp.Button_Clear.font_size = FontSize
+        LayoutsApp.scParent.add_widget(LayoutsApp.Button_Clear)
         #############################################
         Lab_Ay = Label(text='Ay = ')
         Lab_Ay.size_hint = (None, None)
@@ -511,19 +423,19 @@ class LayoutsApp(App):
         Lab_Ay.pos  = (Label_Xo, Y)
         Lab_Ay.font_size = FontSize
         Lab_Ay.shorten = True
-        Main_Layout.add_widget(Lab_Ay)
-        self.T_Ay.text = str_Ay
-        self.T_Ay.size_hint = (None, None)
-        self.T_Ay.width  = TextField_Width
-        self.T_Ay.height = TextField_Height
-        self.T_Ay.pos  = (Xo, Y)
-        self.T_Ay.x = Xo
-        self.T_Ay.y = Y
-        self.T_Ay.font_size = FontSize
-        self.T_Ay.multiline = False
-        self.T_Ay.background_color = (0,0,0,1)
-        self.T_Ay.foreground_color = (1,1,1,1)
-        Main_Layout.add_widget(self.T_Ay)
+        LayoutsApp.scParent.add_widget(Lab_Ay)
+        LayoutsApp.T_Ay.text = str_Ay
+        LayoutsApp.T_Ay.size_hint = (None, None)
+        LayoutsApp.T_Ay.width  = TextField_Width
+        LayoutsApp.T_Ay.height = TextField_Height
+        LayoutsApp.T_Ay.pos  = (Xo, Y)
+        LayoutsApp.T_Ay.x = Xo
+        LayoutsApp.T_Ay.y = Y
+        LayoutsApp.T_Ay.font_size = FontSize
+        LayoutsApp.T_Ay.multiline = False
+        LayoutsApp.T_Ay.background_color = (0,0,0,1)
+        LayoutsApp.T_Ay.foreground_color = (1,1,1,1)
+        LayoutsApp.scParent.add_widget(LayoutsApp.T_Ay)
         #############################################
         Button_Quit = ButtonQuit(text = 'Quit')
         Button_Quit.size_hint = (None, None)
@@ -534,7 +446,7 @@ class LayoutsApp(App):
         Button_Quit.pos = (X, Y)
         Button_Quit.color = (1,1,1,1)
         Button_Quit.font_size = FontSize
-        Main_Layout.add_widget(Button_Quit)
+        LayoutsApp.scParent.add_widget(Button_Quit)
         #############################################
         Lab_At = Label(text='Angle = ')
         Lab_At.size_hint = (None, None)
@@ -544,26 +456,26 @@ class LayoutsApp(App):
         Lab_At.pos  = ((Label_Xo - 5), Y)
         Lab_At.font_size = FontSize
         Lab_At.shorten = True
-        Main_Layout.add_widget(Lab_At)
-        self.T_At.text = str_At
-        self.T_At.size_hint = (None, None)
-        self.T_At.width  = TextField_Width
-        self.T_At.height = TextField_Height
-        self.T_At.pos  = (Xo, Y)
-        self.T_At.x = Xo
-        self.T_At.y = Y
-        self.T_At.font_size = FontSize
-        self.T_At.multiline = False
-        self.T_At.background_color = (0,0,0,1)
-        self.T_At.foreground_color = (1,1,1,1)
-        Main_Layout.add_widget(self.T_At)
+        LayoutsApp.scParent.add_widget(Lab_At)
+        LayoutsApp.T_At.text = str_At
+        LayoutsApp.T_At.size_hint = (None, None)
+        LayoutsApp.T_At.width  = TextField_Width
+        LayoutsApp.T_At.height = TextField_Height
+        LayoutsApp.T_At.pos  = (Xo, Y)
+        LayoutsApp.T_At.x = Xo
+        LayoutsApp.T_At.y = Y
+        LayoutsApp.T_At.font_size = FontSize
+        LayoutsApp.T_At.multiline = False
+        LayoutsApp.T_At.background_color = (0,0,0,1)
+        LayoutsApp.T_At.foreground_color = (1,1,1,1)
+        LayoutsApp.scParent.add_widget(LayoutsApp.T_At)
         #############################################
-        self.T_A.text    = str_A
-        self.T_Ax.text   = str_Ax
-        self.T_Ay.text   = str_Ay
-        self.T_At.text = str_At
+        LayoutsApp.T_A.text  = str_A
+        LayoutsApp.T_Ax.text = str_Ax
+        LayoutsApp.T_Ay.text = str_Ay
+        LayoutsApp.T_At.text = str_At
         #############################################
-        return Main_Layout
+        return LayoutsApp.scParent
 ##############################################################
 ##############################################################
 if __name__ == "__main__":
