@@ -1,6 +1,70 @@
 #############################################################
-# File Name : Calculator.py
-# PhysicsCalc is a General Physics Calculator
+# File Name : Keypad.py
+# 
+# ###########################################################
+# Class LayoutsApp(App) must have a
+# Static GLobal Variable:
+# scParent = FloatLayout()
+# scChildLayout  = RelativeLayout()
+# ###########################################################
+# and there must be a custom TextInput class exactly like
+# the one given below...
+##############################################################
+# class TextInputField(TextInput):
+#    ############################################
+#    # Static Class Variables
+#    scOSKeypad = OSKeypad()
+#    #############################################
+#    def __init__(self, **kwargs):
+#        super(TextInputField, self).__init__(**kwargs)
+#        self.bind(on_touch_down = self.callback_Touched_Down)
+#        self.bind(on_text_validate = self.callback_Validate)
+#        self.coUID = 'String'
+#        self.coUID_Holder = self.coUID
+#    #############################################
+#    def Read_String(self):
+#        return self.text
+#    #############################################
+#    def Write_String(self, String):
+#        self.text = String
+#        return
+#    #############################################
+#    def callback_Touched_Down(self, instance, touch):
+#        # Scan Through All Child Widgets to see which one was Touched
+#        mStr = ''
+#        for child in LayoutsApp.scParent.children:
+#            if((child.collide_point(touch.x, touch.y)) and
+#               (isinstance(child, TextInput))):
+#                mStr = child.coUID
+#                child.coUID_Holder = mStr
+#                # Display the Keypad if it's not already displayed
+#                if(OSKeypad.scIsKeypadDisplayed == False):
+#                    OSKeypad.scIsKeypadDisplayed = True
+#                    #########################################
+#                    # create an object of class OSCalculator
+#                    # and set the FloatLayout property so
+#                    # we can add Buttons and add other
+#                    # Widgets inside the Window
+#                    child.scOSKeypad = TextInputField.scOSKeypad
+#                    child.scOSKeypad.Set_OSKDisplay(self.get_parent_window(),\
+#                                                    LayoutsApp.scChildLayout,\
+#                                                    Window,\
+#                                                    LayoutsApp.Button_Calc.x,\
+#                                                    LayoutsApp.Image_Yo)
+#                    child.scOSKeypad.Display_OSKeypad()
+#                    child.scOSKeypad.Set_TextDisplay(child)
+#                    #########################################
+#                    break
+#        return
+#    #############################################
+#    def callback_Validate(self, value):
+#        TextInputField.scOSKeypad.scTextDisplay.cancel_selection()
+#        TextInputField.scOSKeypad.scTextDisplay.text_validate_unfocus = True
+#        OSKeypad.scIsKeypadDisplayed = False
+#        TextInputField.scOSKeypad.Disappear_OSKeypad()
+#        self.get_parent_window().remove_widget(LayoutsApp.scChildLayout)
+#        return
+##############################################################
 #############################################################
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button

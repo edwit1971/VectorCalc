@@ -12,8 +12,8 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.image import Image
 from kivy.core.window import Window
 
-#  Window.size = (500, 650)  # Tablet Ratio  (Width 768 x Height 1000)
-#  Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
+# Window.size = (500, 650)  # Tablet Ratio  (Width 768 x Height 1000)
+# Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
 
 ##############################################################
 ##############################################################
@@ -80,17 +80,20 @@ class TextInputField(TextInput):
                         # we can add Buttons and add other
                         # Widgets inside the Window
                         child.scOSKeypad = TextInputField.scOSKeypad
+                        ftmp = Window.width / 64
+                        # Correction Factor I came up with
+                        ftmp2 = (1.857 - (Window.height/Window.width)) * 6
+                        Xo = int(ftmp) * (21 + int(ftmp2))
+                        Yo = LayoutsApp.Triangle.y + LayoutsApp.Triangle.height
                         child.scOSKeypad.Set_OSKDisplay(self.get_parent_window(),\
                                                         LayoutsApp.scChildLayout,\
-                                                        Window,\
-                                                        LayoutsApp.Button_Calc.x,\
-                                                        LayoutsApp.Image_Yo)
+                                                        Window, Xo, Yo)
                         child.scOSKeypad.Display_OSKeypad()
                         child.scOSKeypad.Set_TextDisplay(child)
                         #########################################
                         break
         return
-    
+    #############################################
     def callback_Validate(self, value):
         TextInputField.scOSKeypad.scTextDisplay.cancel_selection()
         TextInputField.scOSKeypad.scTextDisplay.text_validate_unfocus = True
@@ -294,8 +297,7 @@ class LayoutsApp(App):
     T_At = TextInputField()
     Button_Clear = ButtonClear()
     Button_Calc  = ButtonCalc()
-    Image_Xo = 0
-    Image_Yo = 0
+    Triangle = Image(source = './images/Vectors.jpg')
     scParent = FloatLayout()
     scChildLayout  = RelativeLayout()
     #############################################
@@ -326,22 +328,21 @@ class LayoutsApp(App):
         ##########################
         ftmp = (Win_xmax * 0.5) - (Image_Width * 0.5)
         X = int(ftmp)
-        LayoutsApp.Image_Xo = X
+        Image_Xo = X
         ftmp = Win_ymax - (TextField_Height * 3) - Image_Height
-        LayoutsApp.Image_Yo = int(ftmp)
-        Xo = LayoutsApp.Image_Xo + TextField_Width
+        Image_Yo = int(ftmp)
+        Xo = Image_Xo + TextField_Width
         ftmp = Label_Width * 0.5
         Label_Xo = Xo - Label_Width - int(ftmp)
         #############################################
-        Triangle = Image(source = './images/Vectors.jpg')
-        Triangle.size_hint = (None, None)
-        Triangle.width  = Image_Width
-        Triangle.height = Image_Height
-        Triangle.pos = (LayoutsApp.Image_Xo, LayoutsApp.Image_Yo)
-        Triangle.allow_stretch = True
-        Triangle.opacity = 1
-        Triangle.keep_ratio = True
-        LayoutsApp.scParent.add_widget(Triangle)
+        LayoutsApp.Triangle.size_hint = (None, None)
+        LayoutsApp.Triangle.width  = Image_Width
+        LayoutsApp.Triangle.height = Image_Height
+        LayoutsApp.Triangle.pos = (Image_Xo, Image_Yo)
+        LayoutsApp.Triangle.allow_stretch = True
+        LayoutsApp.Triangle.opacity = 1
+        LayoutsApp.Triangle.keep_ratio = True
+        LayoutsApp.scParent.add_widget(LayoutsApp.Triangle)
         #############################################
         # Show me the initial Screen Values
         str_A  = '5.0'
@@ -353,7 +354,7 @@ class LayoutsApp(App):
         Lab_A.size_hint = (None, None)
         Lab_A.width  = TextField_Width
         Lab_A.height = TextField_Height
-        Y = LayoutsApp.Image_Yo - (TextField_Height * 2)
+        Y = Image_Yo - (TextField_Height * 2)
         Lab_A.pos  = (Label_Xo, Y)
         Lab_A.font_size = FontSize
         Lab_A.shorten = True
