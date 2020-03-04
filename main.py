@@ -83,8 +83,8 @@ class TextInputField(TextInput):
                         child.scOSKeypad.Set_OSKDisplay(self.get_parent_window(),\
                                                         LayoutsApp.scChildLayout,\
                                                         Window,\
-                                                        LayoutsApp.Image_Xo,\
-                                                        Window.height)
+                                                        LayoutsApp.Button_Calc.x,\
+                                                        LayoutsApp.Image_Yo)
                         child.scOSKeypad.Display_OSKeypad()
                         child.scOSKeypad.Set_TextDisplay(child)
                         #########################################
@@ -295,6 +295,7 @@ class LayoutsApp(App):
     Button_Clear = ButtonClear()
     Button_Calc  = ButtonCalc()
     Image_Xo = 0
+    Image_Yo = 0
     scParent = FloatLayout()
     scChildLayout  = RelativeLayout()
     #############################################
@@ -327,7 +328,7 @@ class LayoutsApp(App):
         X = int(ftmp)
         LayoutsApp.Image_Xo = X
         ftmp = Win_ymax - (TextField_Height * 3) - Image_Height
-        Image_Yo = int(ftmp)
+        LayoutsApp.Image_Yo = int(ftmp)
         Xo = LayoutsApp.Image_Xo + TextField_Width
         ftmp = Label_Width * 0.5
         Label_Xo = Xo - Label_Width - int(ftmp)
@@ -336,7 +337,7 @@ class LayoutsApp(App):
         Triangle.size_hint = (None, None)
         Triangle.width  = Image_Width
         Triangle.height = Image_Height
-        Triangle.pos = (LayoutsApp.Image_Xo, Image_Yo)
+        Triangle.pos = (LayoutsApp.Image_Xo, LayoutsApp.Image_Yo)
         Triangle.allow_stretch = True
         Triangle.opacity = 1
         Triangle.keep_ratio = True
@@ -352,7 +353,7 @@ class LayoutsApp(App):
         Lab_A.size_hint = (None, None)
         Lab_A.width  = TextField_Width
         Lab_A.height = TextField_Height
-        Y = Image_Yo - (TextField_Height * 2)
+        Y = LayoutsApp.Image_Yo - (TextField_Height * 2)
         Lab_A.pos  = (Label_Xo, Y)
         Lab_A.font_size = FontSize
         Lab_A.shorten = True
@@ -366,6 +367,8 @@ class LayoutsApp(App):
         LayoutsApp.T_A.y = Y
         LayoutsApp.T_A.font_size = FontSize
         LayoutsApp.T_A.multiline = False
+        LayoutsApp.T_A.readonly = True
+        LayoutsApp.T_A.hide_keyboard()
         LayoutsApp.T_A.background_color = (0,0,0,1)
         LayoutsApp.T_A.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_A)
@@ -400,6 +403,8 @@ class LayoutsApp(App):
         LayoutsApp.T_Ax.y = Y
         LayoutsApp.T_Ax.font_size = FontSize
         LayoutsApp.T_Ax.multiline = False
+        LayoutsApp.T_Ax.readonly = True
+        LayoutsApp.T_Ax.hide_keyboard()
         LayoutsApp.T_Ax.background_color = (0,0,0,1)
         LayoutsApp.T_Ax.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_Ax)
@@ -433,6 +438,8 @@ class LayoutsApp(App):
         LayoutsApp.T_Ay.y = Y
         LayoutsApp.T_Ay.font_size = FontSize
         LayoutsApp.T_Ay.multiline = False
+        LayoutsApp.T_Ay.readonly = True
+        LayoutsApp.T_Ay.hide_keyboard()
         LayoutsApp.T_Ay.background_color = (0,0,0,1)
         LayoutsApp.T_Ay.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_Ay)
@@ -466,6 +473,8 @@ class LayoutsApp(App):
         LayoutsApp.T_At.y = Y
         LayoutsApp.T_At.font_size = FontSize
         LayoutsApp.T_At.multiline = False
+        LayoutsApp.T_At.readonly = True
+        LayoutsApp.T_At.hide_keyboard()
         LayoutsApp.T_At.background_color = (0,0,0,1)
         LayoutsApp.T_At.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_At)

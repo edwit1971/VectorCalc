@@ -31,6 +31,9 @@ class OSKeypad():
         Height = int(pWindow.height * 0.3) - OSKeypad.scPad - OSKeypad.scPad
         Width = int(pWindow.width * 0.5) - OSKeypad.scPad - OSKeypad.scPad
         pLayout.size_hint = (None, None)
+        while((Width > Height) and (Height > 10)):
+            ftmp = Width * 0.75
+            Width = int(ftmp)
         pLayout.width = Width
         pLayout.height = Height
         X = pX
