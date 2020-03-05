@@ -13,7 +13,7 @@ from kivy.uix.image import Image
 from kivy.core.window import Window
 
 # Window.size = (500, 650)  # Tablet Ratio  (Width 768 x Height 1000)
-# Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
+Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
 
 ##############################################################
 ##############################################################
@@ -95,8 +95,6 @@ class TextInputField(TextInput):
         return
     #############################################
     def callback_Validate(self, value):
-        TextInputField.scOSKeypad.scTextDisplay.cancel_selection()
-        TextInputField.scOSKeypad.scTextDisplay.text_validate_unfocus = True
         OSKeypad.scIsKeypadDisplayed = False
         TextInputField.scOSKeypad.Disappear_OSKeypad()
         self.get_parent_window().remove_widget(LayoutsApp.scChildLayout)
@@ -122,10 +120,14 @@ class ButtonClear(Button):
         super(ButtonClear, self).__init__(**kwargs)
         self.bind(on_press = self.on_press_button)
     def on_press_button(self, instance):
-        LayoutsApp.T_A.text = ' '
-        LayoutsApp.T_Ax.text = ' '
-        LayoutsApp.T_Ay.text = ' '
-        LayoutsApp.T_At.text = ' '
+        LayoutsApp.T_A.text = '0.0'
+        LayoutsApp.T_Ax.text = '0.0'
+        LayoutsApp.T_Ay.text = '0.0'
+        LayoutsApp.T_At.text = '0.0'
+        LayoutsApp.T_A.cancel_selection()
+        LayoutsApp.T_Ax.cancel_selection()
+        LayoutsApp.T_Ay.cancel_selection()
+        LayoutsApp.T_At.cancel_selection()
         LayoutsApp.Button_Calc.disabled = False
         LayoutsApp.Button_Clear.disabled = False
         return
@@ -136,7 +138,6 @@ class ButtonQuit(Button):
         super(ButtonQuit, self).__init__(**kwargs)
         self.bind(on_press = self.on_press_button)
     def on_press_button(self, instance):
-        quit()
         exit()
 ##############################################################
 ##############################################################
@@ -177,17 +178,15 @@ class VectorN():
         # Don't Allow extremely small angles
         # Don't allow Angles Larger than 360
         # and convert Negative angles to Positive
-        if( (At > -0.1) and (At < -0.1) ):
+        if( (At > -1.0) and (At < 1.0) ): # too small
             At = 0.0
-        elif( (At > 360.0) or (At < -360.0) ):
+        elif( (At > 360.0) or (At < -360.0) ): # Greater than 360
             At = 0.0
-        elif( At < 0.0):
+        elif( At < 0.0): # Convert NEGATIVE Angles to Positive
             At = 360.0 + At
         ##########################################
         # convert At to Radians
         At = math.radians(At) # Convert to Radians
-        if(At < 0.017453): # less than 1 degree
-            At = 0.017453  # 1 degree = 0.017453 radians
         ##########################################
         # Pythagorean Theorem
         # if 2 sides are known
@@ -370,6 +369,7 @@ class LayoutsApp(App):
         LayoutsApp.T_A.multiline = False
         LayoutsApp.T_A.readonly = True
         LayoutsApp.T_A.hide_keyboard()
+        LayoutsApp.T_A.use_bubble = False
         LayoutsApp.T_A.background_color = (0,0,0,1)
         LayoutsApp.T_A.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_A)
@@ -406,6 +406,7 @@ class LayoutsApp(App):
         LayoutsApp.T_Ax.multiline = False
         LayoutsApp.T_Ax.readonly = True
         LayoutsApp.T_Ax.hide_keyboard()
+        LayoutsApp.T_Ax.use_bubble = False
         LayoutsApp.T_Ax.background_color = (0,0,0,1)
         LayoutsApp.T_Ax.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_Ax)
@@ -441,6 +442,7 @@ class LayoutsApp(App):
         LayoutsApp.T_Ay.multiline = False
         LayoutsApp.T_Ay.readonly = True
         LayoutsApp.T_Ay.hide_keyboard()
+        LayoutsApp.T_Ay.use_bubble = False
         LayoutsApp.T_Ay.background_color = (0,0,0,1)
         LayoutsApp.T_Ay.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_Ay)
@@ -476,6 +478,7 @@ class LayoutsApp(App):
         LayoutsApp.T_At.multiline = False
         LayoutsApp.T_At.readonly = True
         LayoutsApp.T_At.hide_keyboard()
+        LayoutsApp.T_At.use_bubble = False
         LayoutsApp.T_At.background_color = (0,0,0,1)
         LayoutsApp.T_At.foreground_color = (1,1,1,1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_At)
