@@ -13,7 +13,7 @@ from kivy.uix.image import Image
 from kivy.core.window import Window
 
 # Window.size = (500, 650)  # Tablet Ratio  (Width 768 x Height 1000)
-Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
+# Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
 
 ##############################################################
 ##############################################################
