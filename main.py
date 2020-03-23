@@ -14,9 +14,6 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.image import Image
 from kivy.core.window import Window
 
-# Window.size = (500, 650)  # Tablet Ratio  (Width 768 x Height 1000)
-# Window.size = (350, 650)  # Phone Ratio  (Width 1080 x Height 2004)
-
 ##############################################################
 ##############################################################
 class TextInputField(TextInput):
@@ -26,10 +23,19 @@ class TextInputField(TextInput):
     #############################################
     def __init__(self, **kwargs):
         super(TextInputField, self).__init__(**kwargs)
+        Window.bind(on_keyboard = self.callback_Pressed_GoBack)
         self.bind(on_touch_down = self.callback_Touched_Down)
         self.bind(on_text_validate = self.callback_Validate)
         self.coUID = 'String'
         self.coUID_Holder = self.coUID
+    #############################################
+    def callback_Pressed_GoBack(self, window, key, *args):
+        # Check for the ESC (Go Back) press
+        if(key == 27):
+            exit()
+            return True
+        else:
+            return False
     #############################################
     def Read_String(self):
         return self.text
@@ -70,9 +76,7 @@ class TextInputField(TextInput):
                     mStr = child.coUID
                     child.coUID_Holder = mStr
                     LayoutsApp.Button_Calc.opacity = 0
-                    LayoutsApp.Button_Clear.opacity = 0
                     LayoutsApp.Button_Calc.disabled = True
-                    LayoutsApp.Button_Clear.disabled = True
                     # Display the Keypad if it's not already displayed
                     if(OSKeypad.scIsKeypadDisplayed == False):
                         OSKeypad.scIsKeypadDisplayed = True
@@ -101,9 +105,7 @@ class TextInputField(TextInput):
         TextInputField.scOSKeypad.Disappear_OSKeypad()
         self.get_parent_window().remove_widget(LayoutsApp.scChildLayout)
         LayoutsApp.Button_Calc.disabled = False
-        LayoutsApp.Button_Clear.disabled = False
         LayoutsApp.Button_Calc.opacity = 1
-        LayoutsApp.Button_Clear.opacity = 1
         return
 ##############################################################
 ##############################################################
@@ -113,26 +115,7 @@ class ButtonCalc(Button):
         self.bind(on_press = self.on_press_button)
     def on_press_button(self, instance):
         LayoutsApp.Button_Calc.disabled = False
-        LayoutsApp.Button_Clear.disabled = False
         return VectorN()
-##############################################################
-##############################################################
-class ButtonClear(Button):
-    def __init__(self, **kwargs):
-        super(ButtonClear, self).__init__(**kwargs)
-        self.bind(on_press = self.on_press_button)
-    def on_press_button(self, instance):
-        LayoutsApp.T_A.text = '0.0'
-        LayoutsApp.T_Ax.text = '0.0'
-        LayoutsApp.T_Ay.text = '0.0'
-        LayoutsApp.T_At.text = '0.0'
-        LayoutsApp.T_A.cancel_selection()
-        LayoutsApp.T_Ax.cancel_selection()
-        LayoutsApp.T_Ay.cancel_selection()
-        LayoutsApp.T_At.cancel_selection()
-        LayoutsApp.Button_Calc.disabled = False
-        LayoutsApp.Button_Clear.disabled = False
-        return
 ##############################################################
 ##############################################################
 class ButtonQuit(Button):
@@ -319,7 +302,6 @@ class LayoutsApp(App):
     T_Ax = TextInputField()
     T_Ay = TextInputField()
     T_At = TextInputField()
-    Button_Clear = ButtonClear()
     Button_Calc  = ButtonCalc()
     Triangle = Image(source = './images/Vectors.jpg')
     scParent = FloatLayout()
@@ -447,17 +429,6 @@ class LayoutsApp(App):
         LayoutsApp.T_Ax.foreground_color = (1, 1, 1, 1)
         LayoutsApp.scParent.add_widget(LayoutsApp.T_Ax)
         #############################################
-        LayoutsApp.Button_Clear.text = 'Clear'
-        LayoutsApp.Button_Clear.size_hint = (None, None)
-        ftmp = TextField_Width * 0.6
-        LayoutsApp.Button_Clear.width = int(ftmp)
-        LayoutsApp.Button_Clear.height = TextField_Height
-        Y = Y - TextField_Height
-        LayoutsApp.Button_Clear.pos = (X, Y)
-        LayoutsApp.Button_Clear.color = (1,1,1,1)
-        LayoutsApp.Button_Clear.font_size = FontSize
-        LayoutsApp.scParent.add_widget(LayoutsApp.Button_Clear)
-        #############################################
         Lab_Ay = BackgroundLabel()
         Lab_Ay.text = 'Ay = '
         Lab_Ay.background_color = (0.3, 0.3, 0.3, 1)
@@ -465,6 +436,7 @@ class LayoutsApp(App):
         Lab_Ay.width  = Label_Width
         Lab_Ay.height = TextField_Height
         Lab_Ay.color = (0,1,1,1)
+        Y = Y - TextField_Height
         Y = Y - TextField_Height
         Lab_Ay.pos  = (Label_Xo, Y)
         Lab_Ay.font_size = FontSize
@@ -536,6 +508,7 @@ class LayoutsApp(App):
         LayoutsApp.T_Ay.text = str_Ay
         LayoutsApp.T_At.text = str_At
         #############################################
+        LayoutsApp.title = 'VectorCalc v5.2'
 
         return LayoutsApp.scParent
 ##############################################################
