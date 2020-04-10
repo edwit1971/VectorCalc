@@ -5,8 +5,7 @@ import math
 from Keypad import OSKeypad
 from kivy.app import App
 from kivy.uix.button import Button
-from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color
+from kivy.graphics import Rectangle, Color, InstructionGroup
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
@@ -17,6 +16,7 @@ from kivy.core.window import Window
 ##############################################################
 ##############################################################
 class TextInputField(TextInput):
+
     ############################################
     # Static Class Variables
     scOSKeypad = OSKeypad()
@@ -61,13 +61,13 @@ class TextInputField(TextInput):
         At_Upper = At_Lower + LayoutsApp.T_At.size[1]
         At_Left  = LayoutsApp.T_At.pos[0]
         if((Ty >= A_Lower) and (Ty <= A_Upper) and (Tx <= A_Left)):
-            LayoutsApp.T_A.text = ' '
+            LayoutsApp.T_A.text = ''
         elif((Ty >= Ax_Lower) and (Ty <= Ax_Upper) and (Tx <= Ax_Left)):
-            LayoutsApp.T_Ax.text = ' '
+            LayoutsApp.T_Ax.text = ''
         elif((Ty >= Ay_Lower) and (Ty <= Ay_Upper) and (Tx <= Ay_Left)):
-            LayoutsApp.T_Ay.text = ' '
+            LayoutsApp.T_Ay.text = ''
         elif((Ty >= At_Lower) and (Ty <= At_Upper) and (Tx <= At_Left)):
-            LayoutsApp.T_At.text = ' '
+            LayoutsApp.T_At.text = ''
         else:
             mStr = ''
             for child in LayoutsApp.scParent.children:
@@ -107,6 +107,7 @@ class TextInputField(TextInput):
         LayoutsApp.Button_Calc.disabled = False
         LayoutsApp.Button_Calc.opacity = 1
         return
+
 ##############################################################
 ##############################################################
 class ButtonCalc(Button):
@@ -116,14 +117,7 @@ class ButtonCalc(Button):
     def on_press_button(self, instance):
         LayoutsApp.Button_Calc.disabled = False
         return VectorN()
-##############################################################
-##############################################################
-class ButtonQuit(Button):
-    def __init__(self, **kwargs):
-        super(ButtonQuit, self).__init__(**kwargs)
-        self.bind(on_press = self.on_press_button)
-    def on_press_button(self, instance):
-        exit()
+
 ##############################################################
 ##############################################################
 class VectorN():
@@ -272,26 +266,35 @@ class VectorN():
 
 ##############################################################
 ##############################################################
-class BackgroundColor(Widget):
-    
-    def __init__(self, **kwargs):
-        super(BackgroundColor, self).__init__(**kwargs)
-        self.background_color = (1, 0, 0, 1)
-
-    def Set_Background_Color(self):
-        with self.canvas.before:
-            Color(rgba = (self.background_color))
-            Rectangle(size = (self.size), pos = (self.pos))
-    
-##############################################################
-##############################################################
-class BackgroundLabel(Label, BackgroundColor):
-    
+class BackgroundLabel(Label):
     def __init__(self, **kwargs):
         super(BackgroundLabel, self).__init__(**kwargs)
-        self.background_color = (0, 0, 1, 1)
+        self.cParent = LayoutsApp.scParent
+        self.IG = InstructionGroup()
+        self.background_color = (0, 0, 0, 1)
+        self.color = (1, 1, 1, 1)
 
-    
+    def Set_Background_Color(self):
+        self.opacity = 1
+        self.IG.clear()
+        self.IG.add(Color(rgba = (self.background_color)))
+        self.IG.add(Rectangle(size = (self.size), pos = (self.pos)))
+        self.canvas.before.add(self.IG)
+
+##############################################################
+##############################################################
+class ButtonQuit(Button):
+    def __init__(self, **kwargs):
+        super(ButtonQuit, self).__init__(**kwargs)
+        self.bind(on_press = self.on_press_button)
+    def on_press_button(self, instance):
+        #exit()
+        
+        #LayoutsApp.scParent.canvas.clear()
+        LayoutsApp.Label1.pos = (300, 80)
+        #LayoutsApp.Label1.canvas.clear()
+        #self.canvas.clear()
+
 ##############################################################
 ##############################################################
 class LayoutsApp(App):
@@ -302,6 +305,7 @@ class LayoutsApp(App):
     T_Ax = TextInputField()
     T_Ay = TextInputField()
     T_At = TextInputField()
+    Label1 = Label()
     Button_Calc  = ButtonCalc()
     Triangle = Image(source = './images/Vectors.jpg')
     scParent = FloatLayout()
@@ -316,6 +320,8 @@ class LayoutsApp(App):
         # Custom Scale I will create below
         Win_xmax = Window.width
         Win_ymax = Window.height
+        self.scParent.width = Window.width
+        self.scParent.height = Window.height
         ##########################
         ftmp = Win_ymax / 3
         Image_Height = int(ftmp)
@@ -357,19 +363,20 @@ class LayoutsApp(App):
         #############################################
         Y = Image_Yo - (TextField_Height * 2)
         Lab_A = BackgroundLabel()
+        LayoutsApp.scParent.add_widget(Lab_A)
         Lab_A.text = 'A = '
-        Lab_A.background_color = (0.1, 0.1, 0.1, 1)
         Lab_A.size_hint = (None, None)
         Lab_A.width  = Label_Width
         Lab_A.height = TextField_Height
-        Lab_A.color = (0,1,1,1)
+        Lab_A.color = (0, 1, 1, 1)
         Lab_A.pos  = (Label_Xo, Y)
         Lab_A.font_size = FontSize
         Lab_A.valign = 'middle'
         Lab_A.halign = 'right'
         Lab_A.shorten = True
+        Lab_A.background_color = (0.1, 0.1, 0.1, 1)
         Lab_A.Set_Background_Color()
-        LayoutsApp.scParent.add_widget(Lab_A)
+        #######################
         LayoutsApp.T_A.text = str_A
         LayoutsApp.T_A.size_hint = (None, None)
         LayoutsApp.T_A.width  = TextField_Width
@@ -399,20 +406,21 @@ class LayoutsApp(App):
         LayoutsApp.scParent.add_widget(LayoutsApp.Button_Calc)
         #############################################
         Lab_Ax = BackgroundLabel()
+        LayoutsApp.scParent.add_widget(Lab_Ax)
         Lab_Ax.text = 'Ax = '
-        Lab_Ax.background_color = (0.2, 0.2, 0.2, 1)
         Lab_Ax.size_hint = (None, None)
         Lab_Ax.width  = Label_Width
         Lab_Ax.height = TextField_Height
-        Lab_Ax.color = (0,1,1,1)
+        Lab_Ax.color = (0, 1, 1, 1)
         Y = Y - TextField_Height
         Lab_Ax.pos  = (Label_Xo, Y)
         Lab_Ax.font_size = FontSize
         Lab_Ax.valign = 'middle'
         Lab_Ax.halign = 'right'
         Lab_Ax.shorten = True
+        Lab_Ax.background_color = (0.2, 0.2, 0.2, 1)
         Lab_Ax.Set_Background_Color()
-        LayoutsApp.scParent.add_widget(Lab_Ax)
+        #######################
         LayoutsApp.T_Ax.text = str_Ax
         LayoutsApp.T_Ax.size_hint = (None, None)
         LayoutsApp.T_Ax.width  = TextField_Width
@@ -430,12 +438,12 @@ class LayoutsApp(App):
         LayoutsApp.scParent.add_widget(LayoutsApp.T_Ax)
         #############################################
         Lab_Ay = BackgroundLabel()
+        LayoutsApp.scParent.add_widget(Lab_Ay)
         Lab_Ay.text = 'Ay = '
-        Lab_Ay.background_color = (0.3, 0.3, 0.3, 1)
         Lab_Ay.size_hint = (None, None)
         Lab_Ay.width  = Label_Width
         Lab_Ay.height = TextField_Height
-        Lab_Ay.color = (0,1,1,1)
+        Lab_Ay.color = (0, 1, 1, 1)
         Y = Y - TextField_Height
         Y = Y - TextField_Height
         Lab_Ay.pos  = (Label_Xo, Y)
@@ -443,8 +451,9 @@ class LayoutsApp(App):
         Lab_Ay.valign = 'middle'
         Lab_Ay.halign = 'right'
         Lab_Ay.shorten = True
+        Lab_Ay.background_color = (0.3, 0.3, 0.3, 1)
         Lab_Ay.Set_Background_Color()
-        LayoutsApp.scParent.add_widget(Lab_Ay)
+        #######################
         LayoutsApp.T_Ay.text = str_Ay
         LayoutsApp.T_Ay.size_hint = (None, None)
         LayoutsApp.T_Ay.width  = TextField_Width
@@ -473,20 +482,21 @@ class LayoutsApp(App):
         LayoutsApp.scParent.add_widget(Button_Quit)
         #############################################
         Lab_At = BackgroundLabel()
+        LayoutsApp.scParent.add_widget(Lab_At)
         Lab_At.text = 'At = '
-        Lab_At.background_color = (0.4, 0.4, 0.4, 1)
         Lab_At.size_hint = (None, None)
         Lab_At.width  = Label_Width
         Lab_At.height = TextField_Height
-        Lab_At.color = (0,1,1,1)
+        Lab_At.color = (0, 1, 1, 1)
         Y = Y - TextField_Height
         Lab_At.pos  = (Label_Xo, Y)
         Lab_At.font_size = FontSize
         Lab_At.valign = 'middle'
         Lab_At.halign = 'right'
         Lab_At.shorten = True
+        Lab_At.background_color = (0.4, 0.4, 0.4, 1)
         Lab_At.Set_Background_Color()
-        LayoutsApp.scParent.add_widget(Lab_At)
+        #######################
         LayoutsApp.T_At.text = str_At
         LayoutsApp.T_At.size_hint = (None, None)
         LayoutsApp.T_At.width  = TextField_Width
@@ -508,11 +518,13 @@ class LayoutsApp(App):
         LayoutsApp.T_Ay.text = str_Ay
         LayoutsApp.T_At.text = str_At
         #############################################
-        LayoutsApp.title = 'VectorCalc v5.2'
+
+        LayoutsApp.title = 'VectorCalc v5.3'
 
         return LayoutsApp.scParent
+
 ##############################################################
 ##############################################################
 if __name__ == "__main__":
     LayoutsApp().run()
-    
+
